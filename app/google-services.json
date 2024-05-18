@@ -1,0 +1,29 @@
+{
+  "project_info": {
+    "project_number": "1064635080247",
+    "project_id": "toqkoz",
+    "storage_bucket": "toqkoz.appspot.com"
+  },
+  "client": [
+    {
+      "client_info": {
+        "mobilesdk_app_id": "1:1064635080247:android:2c0e4d109f6791c06669b2",
+        "android_client_info": {
+          "package_name": "com.toqkoz"
+        }
+      },
+      "oauth_client": [],
+      "api_key": [
+        {
+          "current_key": "AIzaSyBn02rSwGinn0GSlfTXnhXn76UEKWyIH6g"
+        }
+      ],
+      "services": {
+        "appinvite_service": {
+          "other_platform_oauth_client": []
+        }
+      }
+    }
+  ],
+  "configuration_version": "1"
+}
