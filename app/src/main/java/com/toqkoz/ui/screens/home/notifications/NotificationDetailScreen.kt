@@ -69,7 +69,7 @@ fun NotificationDetailScreen(navController: NavHostController) {
             }
 
             Text(
-                text = "#55972 РПЗ: Обесточен",
+                text = "#559723 РПЗ: Обесточен",
                 modifier = Modifier
                     .fillMaxWidth()
                     .padding(vertical = 12.dp),
