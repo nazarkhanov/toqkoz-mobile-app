@@ -37,6 +37,7 @@ class MainActivity : ComponentActivity() {
         requestNotificationPermission()
         requestFirebaseToken()
 
+
         setContent {
             ToqkozTheme {
                 navController = rememberNavController()
