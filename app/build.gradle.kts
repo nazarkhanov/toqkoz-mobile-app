@@ -2,6 +2,8 @@ plugins {
     id("com.android.application")
     id("org.jetbrains.kotlin.android")
     id("com.google.gms.google-services")
+    id("com.google.android.libraries.mapsplatform.secrets-gradle-plugin")
+
 }
 
 android {
@@ -81,4 +83,7 @@ dependencies {
     implementation ("com.squareup.retrofit2:converter-gson:2.9.0")
     implementation("androidx.lifecycle:lifecycle-viewmodel-compose:2.6.1")
 
+    implementation ("com.google.maps.android:maps-compose:2.1.1")
+    implementation ("com.google.android.gms:play-services-maps:18.0.2")
+    implementation ("androidx.compose.foundation:foundation:1.2.0-beta02")
 }

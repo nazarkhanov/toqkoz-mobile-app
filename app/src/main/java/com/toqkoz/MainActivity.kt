@@ -21,7 +21,6 @@ import com.google.firebase.messaging.FirebaseMessaging
 import com.toqkoz.data.LoginStatus
 import com.toqkoz.ui.screens.AuthScreen
 import com.toqkoz.ui.screens.HomeScreen
-
 import com.toqkoz.ui.theme.ToqkozTheme
 
 enum class MainScreens {
@@ -40,6 +39,7 @@ class MainActivity : ComponentActivity() {
         viewModel.uploadNotificationsList() // loading the data to viewmodel
         viewModel.uploadTrackersList()
         viewModel.getProfile()
+
 
         setContent {
             ToqkozTheme {
