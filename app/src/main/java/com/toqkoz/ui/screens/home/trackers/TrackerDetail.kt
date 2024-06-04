@@ -62,7 +62,7 @@ fun TrackerDetailScreen(navController: NavHostController, viewModel:MyViewModel)
             )
         },
     ) { innerPadding ->
-        Column(modifier = Modifier.padding(top = 60.dp)) {
+        Column(modifier = Modifier.fillMaxHeight().padding(top = 60.dp)) {
             Chart(viewModel.selectedTracker.value.chartData)
             Column (
                 modifier = Modifier
@@ -75,7 +75,11 @@ fun TrackerDetailScreen(navController: NavHostController, viewModel:MyViewModel)
                     modifier = Modifier
                         .padding(vertical = 8.dp)
                         .clip(RoundedCornerShape(6.dp))
-                        .background(MaterialTheme.colorScheme.error)
+                        .background(color = when (tracker.status) {
+                            "Активен" -> MaterialTheme.colorScheme.primary
+                            "He работает" -> MaterialTheme.colorScheme.error
+                            else -> MaterialTheme.colorScheme.onSurface
+                        })
                         .padding(vertical = 6.dp, horizontal = 8.dp),
                 ) {
                     Text(
@@ -111,21 +115,11 @@ fun TrackerDetailScreen(navController: NavHostController, viewModel:MyViewModel)
 
 @Composable
 fun Chart(chartData:PersistentList<DataPoint>){
-//    val chartData = persistentListOf(
-//        DataPoint(220.0),
-//        DataPoint(224.0),
-//        DataPoint(219.0),
-//        DataPoint(222.0),
-//        DataPoint(220.0),
-//        DataPoint(0.0),
-//        DataPoint(219.0),
-//        DataPoint(222.0),
-//    )
 
         Column (
             modifier = Modifier
                 .fillMaxWidth()
-                .requiredHeight(240.dp)
+                .requiredHeight(120.dp)
                 .padding(vertical = 20.dp),
             verticalArrangement = Arrangement.Center,
             horizontalAlignment = Alignment.End

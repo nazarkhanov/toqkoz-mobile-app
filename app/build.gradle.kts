@@ -86,4 +86,7 @@ dependencies {
     implementation ("com.google.maps.android:maps-compose:2.1.1")
     implementation ("com.google.android.gms:play-services-maps:18.0.2")
     implementation ("androidx.compose.foundation:foundation:1.2.0-beta02")
+
+    implementation ("androidx.navigation:navigation-compose:2.4.0-alpha10")
+    implementation ("com.google.accompanist:accompanist-navigation-animation:0.16.1")
 }

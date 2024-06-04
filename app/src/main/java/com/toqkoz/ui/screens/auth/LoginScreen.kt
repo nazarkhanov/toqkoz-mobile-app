@@ -117,14 +117,14 @@ fun LoginScreen(rootNavController: NavHostController,navController: NavHostContr
                     viewModel.loginValue.value = it}
                 )
 
-                Text(
-                    modifier = Modifier
-                        .padding(top = 32.dp)
-                        .clickable { navController.navigate(AuthScreens.RESET_LOGIN.name) },
-                    text = "Забыли данные для входа?",
-                    textAlign = TextAlign.Center,
-                    style = TextStyle(fontSize = 14.sp, fontWeight = FontWeight.Medium, color = MaterialTheme.colorScheme.primary),
-                )
+//                Text(
+//                    modifier = Modifier
+//                        .padding(top = 32.dp)
+//                        .clickable { navController.navigate(AuthScreens.RESET_LOGIN.name) },
+//                    text = "Забыли данные для входа?",
+//                    textAlign = TextAlign.Center,
+//                    style = TextStyle(fontSize = 14.sp, fontWeight = FontWeight.Medium, color = MaterialTheme.colorScheme.primary),
+//                )
             }
         }
 

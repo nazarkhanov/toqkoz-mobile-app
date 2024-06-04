@@ -9,6 +9,7 @@ import androidx.compose.foundation.layout.Box
 import androidx.compose.foundation.layout.Column
 import androidx.compose.foundation.layout.PaddingValues
 import androidx.compose.foundation.layout.Row
+import androidx.compose.foundation.layout.fillMaxHeight
 import androidx.compose.foundation.layout.fillMaxWidth
 import androidx.compose.foundation.layout.padding
 import androidx.compose.foundation.lazy.LazyColumn
@@ -57,7 +58,7 @@ fun NotificationsListScreen(navController: NavHostController, viewModel: MyViewM
     val pullRefreshState = rememberPullToRefreshState()
     val isLoading by viewModel.isLoading.collectAsState()
 
-    Column(modifier = Modifier.padding(bottom= 60.dp)){
+    Column(modifier = Modifier.fillMaxHeight().padding(bottom= 60.dp)){
         Tabbar(title = "Оповещения")
 
         Box(modifier = Modifier
@@ -81,11 +82,15 @@ fun NotificationsListScreen(navController: NavHostController, viewModel: MyViewM
                     pullRefreshState.endRefresh()
                 }
             }
+
             PullToRefreshContainer(state = pullRefreshState,
-                modifier = Modifier.align(Alignment.TopCenter),
-                containerColor = Color.Transparent,
-                contentColor = Color.Black,
-            )
+                modifier = Modifier
+                    .align(Alignment.TopCenter)
+                    .padding(vertical = 16.dp), // Adding padding for better spacing
+                containerColor =  Color.LightGray.copy(alpha = pullRefreshState.verticalOffset.coerceIn(0.0f, 1.0f)), // Changing the background color of the container
+                contentColor = Color.Black,)
+
+
 
         }
     }

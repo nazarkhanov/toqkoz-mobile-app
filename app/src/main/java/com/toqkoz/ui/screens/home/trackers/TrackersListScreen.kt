@@ -7,6 +7,7 @@ import androidx.compose.foundation.layout.Box
 import androidx.compose.foundation.layout.Column
 import androidx.compose.foundation.layout.PaddingValues
 import androidx.compose.foundation.layout.Row
+import androidx.compose.foundation.layout.fillMaxHeight
 import androidx.compose.foundation.layout.fillMaxWidth
 import androidx.compose.foundation.layout.padding
 import androidx.compose.foundation.lazy.LazyColumn
@@ -52,7 +53,7 @@ fun TrackersListScreen(navController: NavHostController, viewModel: MyViewModel)
     val isLoading by viewModel.isLoading.collectAsState()
 
 
-    Column(modifier = Modifier.padding(bottom= 60.dp)){
+    Column(modifier = Modifier.fillMaxHeight().padding(bottom= 60.dp)){
         Tabbar(title = "Устройства")
         Box(modifier = Modifier
             .nestedScroll(pullRefreshState.nestedScrollConnection)){
@@ -75,10 +76,11 @@ fun TrackersListScreen(navController: NavHostController, viewModel: MyViewModel)
                 }
             }
             PullToRefreshContainer(state = pullRefreshState,
-                modifier = Modifier.align(Alignment.TopCenter),
-                containerColor = Color.Transparent,
-                contentColor = Color.Black
-            )
+                modifier = Modifier
+                    .align(Alignment.TopCenter)
+                    .padding(vertical = 16.dp), // Adding padding for better spacing
+                containerColor =  Color.LightGray.copy(alpha = pullRefreshState.verticalOffset.coerceIn(0.0f, 1.0f)), // Changing the background color of the container
+                contentColor = Color.Black,)
 
 
 
@@ -118,8 +120,12 @@ fun TrackersListElement(navController: NavHostController, tracker: TrackerData, 
                     modifier = Modifier
                         .padding(vertical = 8.dp)
                         .clip(RoundedCornerShape(6.dp))
-                        .background(MaterialTheme.colorScheme.error)
-                        .padding(vertical = 6.dp, horizontal = 8.dp),
+                        .background(color = when (tracker.status) {
+                            "Активен" -> MaterialTheme.colorScheme.primary
+                            "He работает" -> MaterialTheme.colorScheme.error
+                            else -> MaterialTheme.colorScheme.onSurface
+                        })
+                            .padding(vertical = 6.dp, horizontal = 8.dp),
                 ) {
                     Text(
                         text = tracker.status,
@@ -130,10 +136,7 @@ fun TrackersListElement(navController: NavHostController, tracker: TrackerData, 
                     )
                 }
 
-//                Text(
-//                    text = "10 минут назад",
-//                    style = TextStyle(fontSize = 12.sp)
-//                )
+
             }
 
             Column {
@@ -146,21 +149,13 @@ fun TrackersListElement(navController: NavHostController, tracker: TrackerData, 
                     )
                 )
 
-//                Text(
-//                    text = notification.count.toString()+" оповещений",
-//                    modifier = Modifier.padding(bottom = 8.dp),
-//                    style = TextStyle(
-//                        color = MaterialTheme.colorScheme.onBackground,
-//                        fontSize = 12.sp
-//                    )
-//                )
             }
         }
     }
 }
 
-@Preview
-@Composable
-fun TrackersListScreenPreview(){
-//    TrackersListScreen(rememberNavController(), viewModel = MyViewModel())
-}
+//@Preview
+//@Composable
+//fun TrackersListScreenPreview(){
+////    TrackersListScreen(rememberNavController(), viewModel = MyViewModel())
+//}

@@ -1,8 +1,16 @@
 package com.toqkoz.ui.screens
 
 import android.annotation.SuppressLint
+import android.transition.Fade
 import androidx.compose.animation.EnterTransition
 import androidx.compose.animation.ExitTransition
+import androidx.compose.animation.fadeIn
+import androidx.compose.animation.fadeOut
+import androidx.compose.animation.slideIn
+import androidx.compose.animation.slideInHorizontally
+import androidx.compose.animation.slideInVertically
+import androidx.compose.animation.slideOutHorizontally
+import androidx.compose.animation.slideOutVertically
 import androidx.compose.foundation.layout.RowScope
 import androidx.compose.foundation.layout.fillMaxSize
 import androidx.compose.foundation.layout.height
@@ -37,6 +45,7 @@ import androidx.compose.ui.geometry.Offset
 import androidx.compose.ui.graphics.vector.ImageVector
 import androidx.compose.ui.text.TextStyle
 import androidx.compose.ui.tooling.preview.Preview
+import androidx.compose.ui.unit.IntOffset
 import androidx.compose.ui.unit.dp
 import androidx.compose.ui.unit.sp
 import androidx.navigation.NavHostController
@@ -44,17 +53,20 @@ import androidx.navigation.compose.NavHost
 import androidx.navigation.compose.composable
 import androidx.navigation.compose.rememberNavController
 import com.toqkoz.MyViewModel
+import com.toqkoz.ui.screens.auth.AboutScreen
 import com.toqkoz.ui.screens.home.MapScreen
 import com.toqkoz.ui.screens.home.NotificationsScreen
 import com.toqkoz.ui.screens.home.SettingsScreen
 import com.toqkoz.ui.screens.home.TrackersScreen
 import com.toqkoz.ui.theme.ToqkozTheme
 
+
 enum class HomeScreens {
     NOTIFICATIONS,
     TRACKERS,
     MAP,
     SETTINGS,
+    ABOUT
 }
 
 @SuppressLint("UnusedMaterial3ScaffoldPaddingParameter")
@@ -62,77 +74,80 @@ enum class HomeScreens {
  fun HomeScreen(rootNavController: NavHostController, viewModel: MyViewModel) {
     val homeNavController = rememberNavController()
     var selectedRoute by remember {mutableStateOf(HomeScreens.NOTIFICATIONS) }
+    var showBottomBar by remember { mutableStateOf(true) }
 
     Surface(
         modifier = Modifier.fillMaxSize(),
     ) {
         Scaffold(
+
             bottomBar = {
                 val color = MaterialTheme.colorScheme.outlineVariant
-
-                Surface(
-                    modifier = Modifier.drawBehind {
-                        drawLine(
-                            color = color,
-                            start = Offset(0f, 0f),
-                            end = Offset(size.width, 0f),
-                            strokeWidth = 1.dp.toPx()
-                        )
-                    }
-                ) {
-                    NavigationBar(
-                        containerColor = MaterialTheme.colorScheme.background,
-                        tonalElevation = 0.dp,
-                        modifier = Modifier.height(64.dp),
+                if (showBottomBar){
+                    Surface(
+                        modifier = Modifier.drawBehind {
+                            drawLine(
+                                color = color,
+                                start = Offset(0f, 0f),
+                                end = Offset(size.width, 0f),
+                                strokeWidth = 1.dp.toPx()
+                            )
+                        }
                     ) {
-                        NavigationItem(
-                            navController = homeNavController,
-                            rowScope = this,
-                            route = HomeScreens.NOTIFICATIONS,
-                            onClick = { selectedRoute = HomeScreens.NOTIFICATIONS },
-                            isSelected = selectedRoute == HomeScreens.NOTIFICATIONS,
-                            title = "Оповещения",
-                            selectedIcon = Icons.Filled.Notifications,
-                            unselectedIcon = Icons.Outlined.Notifications,
-                            hasNews = false,
-                            badgeCount = 5
-                        )
-                        NavigationItem(
-                            navController = homeNavController,
-                            rowScope = this,
-                            route = HomeScreens.TRACKERS,
-                            onClick = { selectedRoute = HomeScreens.TRACKERS },
-                            isSelected = selectedRoute == HomeScreens.TRACKERS,
-                            title = "Устройства",
-                            selectedIcon = Icons.Filled.Info,
-                            unselectedIcon = Icons.Outlined.Info,
-                            hasNews = false,
-                            badgeCount = null
-                        )
-                        NavigationItem(
-                            navController = homeNavController,
-                            rowScope = this,
-                            route = HomeScreens.MAP,
-                            onClick = { selectedRoute = HomeScreens.MAP },
-                            isSelected = selectedRoute == HomeScreens.MAP,
-                            title = "Карта",
-                            selectedIcon = Icons.Filled.LocationOn,
-                            unselectedIcon = Icons.Outlined.LocationOn,
-                            hasNews = false,
-                            badgeCount = null
-                        )
-                        NavigationItem(
-                            navController = homeNavController,
-                            rowScope = this,
-                            route = HomeScreens.SETTINGS,
-                            onClick = { selectedRoute = HomeScreens.SETTINGS },
-                            isSelected = selectedRoute == HomeScreens.SETTINGS,
-                            title = "Настройки",
-                            selectedIcon = Icons.Filled.Settings,
-                            unselectedIcon = Icons.Outlined.Settings,
-                            hasNews = false,
-                            badgeCount = null
-                        )
+                        NavigationBar(
+                            containerColor = MaterialTheme.colorScheme.background,
+                            tonalElevation = 0.dp,
+                            modifier = Modifier.height(64.dp),
+                        ) {
+                            NavigationItem(
+                                navController = homeNavController,
+                                rowScope = this,
+                                route = HomeScreens.NOTIFICATIONS,
+                                onClick = { selectedRoute = HomeScreens.NOTIFICATIONS },
+                                isSelected = selectedRoute == HomeScreens.NOTIFICATIONS,
+                                title = "Оповещения",
+                                selectedIcon = Icons.Filled.Notifications,
+                                unselectedIcon = Icons.Outlined.Notifications,
+                                hasNews = false,
+                                badgeCount = null
+                            )
+                            NavigationItem(
+                                navController = homeNavController,
+                                rowScope = this,
+                                route = HomeScreens.TRACKERS,
+                                onClick = { selectedRoute = HomeScreens.TRACKERS },
+                                isSelected = selectedRoute == HomeScreens.TRACKERS,
+                                title = "Устройства",
+                                selectedIcon = Icons.Filled.Info,
+                                unselectedIcon = Icons.Outlined.Info,
+                                hasNews = false,
+                                badgeCount = null
+                            )
+                            NavigationItem(
+                                navController = homeNavController,
+                                rowScope = this,
+                                route = HomeScreens.MAP,
+                                onClick = { selectedRoute = HomeScreens.MAP },
+                                isSelected = selectedRoute == HomeScreens.MAP,
+                                title = "Карта",
+                                selectedIcon = Icons.Filled.LocationOn,
+                                unselectedIcon = Icons.Outlined.LocationOn,
+                                hasNews = false,
+                                badgeCount = null
+                            )
+                            NavigationItem(
+                                navController = homeNavController,
+                                rowScope = this,
+                                route = HomeScreens.SETTINGS,
+                                onClick = { selectedRoute = HomeScreens.SETTINGS },
+                                isSelected = selectedRoute == HomeScreens.SETTINGS,
+                                title = "Настройки",
+                                selectedIcon = Icons.Filled.Settings,
+                                unselectedIcon = Icons.Outlined.Settings,
+                                hasNews = false,
+                                badgeCount = null
+                            )
+                        }
                     }
                 }
             }
@@ -149,15 +164,23 @@ enum class HomeScreens {
             ) {
                 composable(route = HomeScreens.NOTIFICATIONS.name) {
                     NotificationsScreen(viewModel)
+                    showBottomBar = true
                 }
                 composable(route = HomeScreens.TRACKERS.name) {
                     TrackersScreen(viewModel)
+                    showBottomBar = true
                 }
                 composable(route = HomeScreens.MAP.name) {
                     MapScreen()
                 }
                 composable(route = HomeScreens.SETTINGS.name) {
-                    SettingsScreen(rootNavController,viewModel)
+                    SettingsScreen(rootNavController,homeNavController,viewModel)
+                    showBottomBar = true
+                }
+                composable(route = HomeScreens.ABOUT.name) {
+                    AboutScreen(navController = homeNavController)
+                    showBottomBar = false
+
                 }
             }
         }

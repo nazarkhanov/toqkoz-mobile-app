@@ -43,6 +43,8 @@ import androidx.compose.ui.graphics.vector.ImageVector
 import androidx.compose.ui.res.vectorResource
 import androidx.compose.ui.text.TextStyle
 import androidx.compose.ui.text.font.FontWeight
+import androidx.compose.ui.text.input.PasswordVisualTransformation
+import androidx.compose.ui.text.input.VisualTransformation
 import androidx.compose.ui.text.style.TextAlign
 import androidx.compose.ui.tooling.preview.Preview
 import androidx.compose.ui.unit.dp
@@ -77,7 +79,7 @@ import retrofit2.converter.gson.GsonConverterFactory
 @OptIn(DelicateCoroutinesApi::class)
 @Composable
 fun PasswordScreen(rootNavController: NavHostController, authNavController: NavHostController, viewModel: MyViewModel) {
-    var isShowPasswordChecked by remember { mutableStateOf(true) }
+    var isShowPasswordChecked by remember { mutableStateOf(false) }
     val passwordValue by viewModel.passwordValue.collectAsState()
     val focusRequester = remember { FocusRequester() }
     val interactionSource = remember { MutableInteractionSource() }
@@ -140,7 +142,7 @@ fun PasswordScreen(rootNavController: NavHostController, authNavController: NavH
                 Text(
                     modifier = Modifier
                         .padding(vertical = 8.dp, horizontal = 8.dp),
-                    text = "alisher.nazarkhanov",
+                    text = viewModel.loginValue.value,
                     textAlign = TextAlign.Center,
                     style = TextStyle(fontSize = 14.sp)
                 )
@@ -161,7 +163,12 @@ fun PasswordScreen(rootNavController: NavHostController, authNavController: NavH
                         .fillMaxWidth()
                         .focusRequester(focusRequester),
                     onValueChange = { viewModel.passwordValue.value = it },
-                    isError = loginStatus == LoginStatus.WRONGCREDENTIALS.name
+                    isError = loginStatus == LoginStatus.WRONGCREDENTIALS.name,
+                    visualTransformation = if (isShowPasswordChecked) {
+                        VisualTransformation.None
+                    } else {
+                        PasswordVisualTransformation()
+                    }
                 )
 
                 Row (
@@ -174,7 +181,9 @@ fun PasswordScreen(rootNavController: NavHostController, authNavController: NavH
                         ) { isShowPasswordChecked = !isShowPasswordChecked },
 
                 ) {
-                    Checkbox(checked = isShowPasswordChecked, onCheckedChange = {}, modifier = Modifier.absoluteOffset((-12).dp))
+                    Checkbox(checked = isShowPasswordChecked, onCheckedChange = {
+                        isShowPasswordChecked= !isShowPasswordChecked
+                    }, modifier = Modifier.absoluteOffset((-12).dp))
                     Text(
                         text = "Показать пароль",
                         textAlign = TextAlign.Center,
@@ -183,14 +192,14 @@ fun PasswordScreen(rootNavController: NavHostController, authNavController: NavH
                     )
                 }
 
-                Text(
-                    modifier = Modifier
-                        .padding(top = 32.dp)
-                        .clickable { authNavController.navigate(AuthScreens.RESET_PASSWORD.name) },
-                    text = "Забыли пароль от аккаунта?",
-                    textAlign = TextAlign.Center,
-                    style = TextStyle(fontSize = 14.sp, fontWeight = FontWeight.Medium, color = MaterialTheme.colorScheme.primary),
-                )
+//                Text(
+//                    modifier = Modifier
+//                        .padding(top = 32.dp)
+//                        .clickable { authNavController.navigate(AuthScreens.RESET_PASSWORD.name) },
+//                    text = "Забыли пароль от аккаунта?",
+//                    textAlign = TextAlign.Center,
+//                    style = TextStyle(fontSize = 14.sp, fontWeight = FontWeight.Medium, color = MaterialTheme.colorScheme.primary),
+//                )
             }
         }
 

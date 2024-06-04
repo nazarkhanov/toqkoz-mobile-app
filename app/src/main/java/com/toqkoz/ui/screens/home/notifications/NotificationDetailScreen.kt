@@ -4,6 +4,7 @@ import android.annotation.SuppressLint
 import androidx.compose.foundation.background
 import androidx.compose.foundation.layout.Box
 import androidx.compose.foundation.layout.Column
+import androidx.compose.foundation.layout.fillMaxHeight
 import androidx.compose.foundation.layout.fillMaxWidth
 import androidx.compose.foundation.layout.padding
 import androidx.compose.foundation.shape.RoundedCornerShape
@@ -52,6 +53,7 @@ fun NotificationDetailScreen(navController: NavHostController, viewModel: MyView
         Column (
             modifier = Modifier
                 .fillMaxWidth()
+                .fillMaxHeight()
                 .padding(innerPadding)
                 .padding(horizontal = 20.dp, vertical = 4.dp),
         ) {
