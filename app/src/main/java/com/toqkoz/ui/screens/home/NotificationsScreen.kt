@@ -44,6 +44,6 @@ fun NotificationsScreen(viewModel: MyViewModel) {
 @Composable
 fun NotificationsScreenPreview() {
     ToqkozTheme {
-        NotificationsScreen(viewModel = MyViewModel())
+//        NotificationsScreen(viewModel = MyViewModel())
     }
 }

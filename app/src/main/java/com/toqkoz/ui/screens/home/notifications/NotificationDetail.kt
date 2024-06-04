@@ -93,7 +93,7 @@ fun NotificationDetailScreen(navController: NavHostController, viewModel: MyView
 @Composable
 fun NotificationDetailScreenPreview() {
     ToqkozTheme {
-        NotificationDetailScreen(rememberNavController(), viewModel = MyViewModel())
+//        NotificationDetailScreen(rememberNavController(), viewModel = MyViewModel())
     }
 }
 

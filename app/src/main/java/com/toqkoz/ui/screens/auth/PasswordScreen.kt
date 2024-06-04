@@ -1,5 +1,7 @@
 package com.toqkoz.ui.screens.auth
 
+import android.util.Log
+import android.widget.Toast
 import androidx.compose.foundation.Image
 import androidx.compose.foundation.background
 import androidx.compose.foundation.clickable
@@ -28,6 +30,7 @@ import androidx.compose.material3.Text
 import androidx.compose.material3.TextButton
 import androidx.compose.runtime.Composable
 import androidx.compose.runtime.LaunchedEffect
+import androidx.compose.runtime.collectAsState
 import androidx.compose.runtime.getValue
 import androidx.compose.runtime.mutableStateOf
 import androidx.compose.runtime.remember
@@ -47,16 +50,38 @@ import androidx.compose.ui.unit.sp
 import androidx.navigation.NavHostController
 import androidx.navigation.compose.rememberNavController
 import com.toqkoz.MainScreens
+import com.toqkoz.MyApi
+import com.toqkoz.MyViewModel
 import com.toqkoz.R
+import com.toqkoz.data.AuthRequest
+import com.toqkoz.data.LoginStatus
+import com.toqkoz.data.NotificationData
+import com.toqkoz.data.TokenData
+import com.toqkoz.data.TrackerData
 import com.toqkoz.ui.screens.AuthScreens
 import com.toqkoz.ui.theme.ToqkozTheme
+import kotlinx.coroutines.DelicateCoroutinesApi
+import kotlinx.coroutines.Dispatchers
+import kotlinx.coroutines.GlobalScope
+import kotlinx.coroutines.launch
+import kotlinx.coroutines.withContext
+import okhttp3.Dispatcher
+import retrofit2.Call
+import retrofit2.Callback
+import retrofit2.HttpException
+import retrofit2.Response
+import retrofit2.Retrofit
+import retrofit2.converter.gson.GsonConverterFactory
 
+
+@OptIn(DelicateCoroutinesApi::class)
 @Composable
-fun PasswordScreen(rootNavController: NavHostController, authNavController: NavHostController) {
+fun PasswordScreen(rootNavController: NavHostController, authNavController: NavHostController, viewModel: MyViewModel) {
     var isShowPasswordChecked by remember { mutableStateOf(true) }
-    var passwordValue by remember { mutableStateOf("") }
+    val passwordValue by viewModel.passwordValue.collectAsState()
     val focusRequester = remember { FocusRequester() }
     val interactionSource = remember { MutableInteractionSource() }
+    val loginStatus by viewModel.loginStatus.collectAsState()
 
     Surface(
         modifier = Modifier.fillMaxSize(),
@@ -64,7 +89,9 @@ fun PasswordScreen(rootNavController: NavHostController, authNavController: NavH
         Box(modifier = Modifier
             .height(1.dp)
             .fillMaxWidth()) {
-            LinearProgressIndicator(modifier = Modifier.fillMaxWidth())
+            if(loginStatus == LoginStatus.LOADING.name){
+                LinearProgressIndicator(modifier = Modifier.fillMaxWidth())
+            }
         }
 
         Column(
@@ -125,17 +152,23 @@ fun PasswordScreen(rootNavController: NavHostController, authNavController: NavH
                 OutlinedTextField(
                     value = passwordValue,
                     label = {
-                        Text(text = "Введите пароль")
+                        Text(text =
+                        if (loginStatus == LoginStatus.WRONGCREDENTIALS.name){
+                            "Неверный логин или пароль"
+                        } else{"Введите пароль"})
                     },
-                    modifier = Modifier.fillMaxWidth().focusRequester(focusRequester),
-                    onValueChange = { passwordValue = it }
+                    modifier = Modifier
+                        .fillMaxWidth()
+                        .focusRequester(focusRequester),
+                    onValueChange = { viewModel.passwordValue.value = it },
+                    isError = loginStatus == LoginStatus.WRONGCREDENTIALS.name
                 )
 
                 Row (
                     verticalAlignment = Alignment.CenterVertically,
                     modifier = Modifier
                         .padding(vertical = 8.dp)
-                        .clickable (
+                        .clickable(
                             interactionSource = interactionSource,
                             indication = null
                         ) { isShowPasswordChecked = !isShowPasswordChecked },
@@ -151,7 +184,9 @@ fun PasswordScreen(rootNavController: NavHostController, authNavController: NavH
                 }
 
                 Text(
-                    modifier = Modifier.padding(top = 32.dp).clickable { authNavController.navigate(AuthScreens.RESET_PASSWORD.name) },
+                    modifier = Modifier
+                        .padding(top = 32.dp)
+                        .clickable { authNavController.navigate(AuthScreens.RESET_PASSWORD.name) },
                     text = "Забыли пароль от аккаунта?",
                     textAlign = TextAlign.Center,
                     style = TextStyle(fontSize = 14.sp, fontWeight = FontWeight.Medium, color = MaterialTheme.colorScheme.primary),
@@ -166,13 +201,16 @@ fun PasswordScreen(rootNavController: NavHostController, authNavController: NavH
             Row(
                 modifier = Modifier
                     .padding(vertical = 20.dp, horizontal = 20.dp)
-                    .fillMaxWidth().background(MaterialTheme.colorScheme.background),
+                    .fillMaxWidth()
+                    .background(MaterialTheme.colorScheme.background),
                 verticalAlignment = Alignment.CenterVertically,
                 horizontalArrangement = Arrangement.SpaceBetween,
             ) {
                 TextButton(
                     onClick = {
+                        viewModel.loginStatus.value = "Logging"
                         authNavController.popBackStack()
+
                     }
                 ) {
                     Text(text = "Назад")
@@ -180,10 +218,17 @@ fun PasswordScreen(rootNavController: NavHostController, authNavController: NavH
 
                 Button(
                     onClick = {
-                        rootNavController.navigate(route = MainScreens.HOME.name)
+                        viewModel.loginStatus.value = LoginStatus.LOADING.name
+                        val authRequest = AuthRequest(email = viewModel.loginValue.value, password = passwordValue)
+
+                        viewModel.signin(authRequest)
+
                     }
                 ) {
                     Text(text = "Далее")
+                }
+                if(loginStatus == LoginStatus.LOGGEDIN.name){
+                    rootNavController.navigate(route = MainScreens.HOME.name)
                 }
             }
         }
@@ -194,10 +239,12 @@ fun PasswordScreen(rootNavController: NavHostController, authNavController: NavH
     }
 }
 
+
+
 @Preview(showBackground = true)
 @Composable
 fun PasswordScreenPreview() {
     ToqkozTheme {
-        PasswordScreen(rememberNavController(), rememberNavController())
+//        PasswordScreen(rememberNavController(), rememberNavController(), viewModel = MyViewModel())
     }
 }

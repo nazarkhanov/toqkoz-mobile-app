@@ -21,6 +21,7 @@ import androidx.compose.material3.Surface
 import androidx.compose.material3.Text
 import androidx.compose.material3.TextButton
 import androidx.compose.runtime.Composable
+import androidx.compose.runtime.collectAsState
 import androidx.compose.runtime.getValue
 import androidx.compose.runtime.mutableStateOf
 import androidx.compose.runtime.remember
@@ -37,19 +38,31 @@ import androidx.compose.ui.unit.dp
 import androidx.compose.ui.unit.sp
 import androidx.navigation.NavHostController
 import androidx.navigation.compose.rememberNavController
+import com.toqkoz.MainScreens
+import com.toqkoz.MyViewModel
 import com.toqkoz.R
+import com.toqkoz.data.AuthRequest
+import com.toqkoz.data.LoginStatus
 import com.toqkoz.ui.screens.AuthScreens
 import com.toqkoz.ui.theme.ToqkozTheme
 
 @Composable
-fun LoginScreen(navController: NavHostController) {
-    var loginValue by remember { mutableStateOf("") }
+fun LoginScreen(rootNavController: NavHostController,navController: NavHostController, viewModel: MyViewModel) {
+    val loginValue by viewModel.loginValue.collectAsState()
+    val loginStatus by viewModel.loginStatus.collectAsState()
+
+    if (loginStatus == LoginStatus.LOGGEDIN.name){
+        rootNavController.navigate(route = MainScreens.HOME.name)
+    }
+
 
     Surface(
         modifier = Modifier.fillMaxSize(),
     ) {
-        Box(modifier = Modifier.height(1.dp).fillMaxWidth()) {
-            LinearProgressIndicator(modifier = Modifier.fillMaxWidth())
+        Box(modifier = Modifier
+            .height(1.dp)
+            .fillMaxWidth()) {
+//            LinearProgressIndicator(modifier = Modifier.fillMaxWidth())
         }
 
         Column(
@@ -100,11 +113,14 @@ fun LoginScreen(navController: NavHostController) {
                         Text(text = "Телефон или адрес эл. почты")
                     },
                     modifier = Modifier.fillMaxWidth(),
-                    onValueChange = { loginValue = it }
+                    onValueChange = {
+                    viewModel.loginValue.value = it}
                 )
 
                 Text(
-                    modifier = Modifier.padding(top = 32.dp).clickable { navController.navigate(AuthScreens.RESET_LOGIN.name) },
+                    modifier = Modifier
+                        .padding(top = 32.dp)
+                        .clickable { navController.navigate(AuthScreens.RESET_LOGIN.name) },
                     text = "Забыли данные для входа?",
                     textAlign = TextAlign.Center,
                     style = TextStyle(fontSize = 14.sp, fontWeight = FontWeight.Medium, color = MaterialTheme.colorScheme.primary),
@@ -119,7 +135,8 @@ fun LoginScreen(navController: NavHostController) {
             Row(
                 modifier = Modifier
                     .padding(vertical = 20.dp, horizontal = 20.dp)
-                    .fillMaxWidth().background(MaterialTheme.colorScheme.background),
+                    .fillMaxWidth()
+                    .background(MaterialTheme.colorScheme.background),
                 verticalAlignment = Alignment.CenterVertically,
                 horizontalArrangement = Arrangement.SpaceBetween,
             ) {
@@ -147,6 +164,6 @@ fun LoginScreen(navController: NavHostController) {
 @Composable
 fun LoginScreenPreview() {
     ToqkozTheme {
-        LoginScreen(rememberNavController())
+//        LoginScreen(rememberNavController(), viewModel = MyViewModel())
     }
 }

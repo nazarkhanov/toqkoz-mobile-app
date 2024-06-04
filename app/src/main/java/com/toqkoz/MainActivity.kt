@@ -5,12 +5,12 @@ import android.content.pm.PackageManager
 import android.os.Build
 import android.os.Bundle
 import android.util.Log
-import android.view.WindowManager
-import android.widget.Toast
 import androidx.activity.ComponentActivity
 import androidx.activity.compose.setContent
 import androidx.compose.animation.EnterTransition
 import androidx.compose.animation.ExitTransition
+import androidx.compose.runtime.collectAsState
+import androidx.compose.runtime.getValue
 import androidx.core.app.ActivityCompat
 import androidx.core.content.ContextCompat
 import androidx.navigation.NavHostController
@@ -18,19 +18,11 @@ import androidx.navigation.compose.NavHost
 import androidx.navigation.compose.composable
 import androidx.navigation.compose.rememberNavController
 import com.google.firebase.messaging.FirebaseMessaging
-import com.google.firebase.messaging.FirebaseMessagingService
+import com.toqkoz.data.LoginStatus
 import com.toqkoz.ui.screens.AuthScreen
 import com.toqkoz.ui.screens.HomeScreen
 
 import com.toqkoz.ui.theme.ToqkozTheme
-import kotlinx.coroutines.CoroutineScope
-import kotlinx.coroutines.Dispatchers
-import kotlinx.coroutines.launch
-import retrofit2.Call
-import retrofit2.Callback
-import retrofit2.Response
-import retrofit2.Retrofit
-import retrofit2.converter.gson.GsonConverterFactory
 
 enum class MainScreens {
     AUTH,
@@ -44,30 +36,43 @@ class MainActivity : ComponentActivity() {
         super.onCreate(savedInstanceState)
         requestNotificationPermission()
         requestFirebaseToken()
-        val viewModel= MyViewModel()
+        val viewModel= MyViewModel(application.getSharedPreferences("prefs", MODE_PRIVATE))
         viewModel.uploadNotificationsList() // loading the data to viewmodel
+        viewModel.uploadTrackersList()
+        viewModel.getProfile()
 
         setContent {
             ToqkozTheme {
                 navController = rememberNavController()
-
-                NavHost(
-                    navController = navController,
-                    startDestination = MainScreens.AUTH.name,
-                    enterTransition = {
-                        EnterTransition.None
-                    },
-                    exitTransition = {
-                        ExitTransition.None
-                    },
-                ) {
-                    composable(route = MainScreens.AUTH.name) {
-                        AuthScreen(navController)
-                    }
-                    composable(route = MainScreens.HOME.name) {
-                        HomeScreen(navController, viewModel)
+                var startDest = MainScreens.AUTH.name
+                val loginStatus by viewModel.loginStatus.collectAsState()
+                if (loginStatus == LoginStatus.LOGGING.name){
+                    startDest = MainScreens.AUTH.name
+                }
+                if (loginStatus == LoginStatus.LOGGEDIN.name){
+                    startDest = MainScreens.HOME.name
+                }
+                if (loginStatus != LoginStatus.WAITING.name){
+                    NavHost(
+                        navController = navController,
+                        startDestination = startDest,
+                        enterTransition = {
+                            EnterTransition.None
+                        },
+                        exitTransition = {
+                            ExitTransition.None
+                        },
+                    ) {
+                        composable(route = MainScreens.AUTH.name) {
+                            AuthScreen(navController, viewModel)
+                        }
+                        composable(route = MainScreens.HOME.name) {
+                            HomeScreen(navController, viewModel)
+                        }
                     }
                 }
+
+
             }
         }
     }
@@ -94,6 +99,9 @@ class MainActivity : ComponentActivity() {
             if (!it.isSuccessful) return@addOnCompleteListener
             val token = it.result
             Log.d("test", "token: $token")
+
+            //SEND THIS TOKEN
+            //EITHER USER ID OR TOKEN SEND TO
         }
     }
 

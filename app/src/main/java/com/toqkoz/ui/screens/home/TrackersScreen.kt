@@ -64,6 +64,6 @@ fun TrackersScreen(viewModel:MyViewModel) {
 @Composable
 fun TrackersScreenPreview() {
     ToqkozTheme {
-        TrackersScreen(viewModel = MyViewModel())
+//        TrackersScreen(viewModel = MyViewModel())
     }
 }

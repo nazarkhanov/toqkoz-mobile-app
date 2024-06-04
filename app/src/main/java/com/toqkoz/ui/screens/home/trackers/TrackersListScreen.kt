@@ -13,6 +13,7 @@ import androidx.compose.foundation.lazy.LazyColumn
 import androidx.compose.foundation.lazy.items
 import androidx.compose.foundation.shape.RoundedCornerShape
 import androidx.compose.material3.CardDefaults
+import androidx.compose.material3.ExperimentalMaterial3Api
 import androidx.compose.material3.MaterialTheme
 import androidx.compose.material3.OutlinedCard
 import androidx.compose.material3.Text
@@ -42,65 +43,48 @@ import com.toqkoz.ui.screens.home.NotificationsScreens
 
 import kotlinx.collections.immutable.persistentListOf
 
-val trackersList = listOf<TrackerData>(
-    TrackerData(
-        id = "jnkjnvkdnfdvad",
-        title = "Устройство номер 1",
-        status = "Неисправность",
-        description = "Some description",
-        chartData = persistentListOf(
-            DataPoint(220.0),
-            DataPoint(224.0),
-            DataPoint(219.0),
-            DataPoint(222.0),
-            DataPoint(220.0),
-            DataPoint(0.0),
-            DataPoint(219.0),
-            DataPoint(500.0),)
-        ),
-    TrackerData(
-        id = "jnkjnvkdnfdvad",
-        title = "Устройство номер 2",
-        status = "Неисправность",
-        description = "Some description",
-        chartData = persistentListOf(
-            DataPoint(220.0),
-            DataPoint(224.0),
-            DataPoint(219.0),
-            DataPoint(222.0),
-            DataPoint(220.0),
-            DataPoint(184.0),
-            DataPoint(219.0),
-            DataPoint(222.0),)
-    ),TrackerData(
-        id = "jnkjnvkdnfdvad",
-        title = "Устройство номер 3",
-        status = "Неисправность",
-        description = "Some description",
-        chartData = persistentListOf(
-            DataPoint(220.0),
-            DataPoint(224.0),
-            DataPoint(219.0),
-            DataPoint(222.0),
-            DataPoint(220.0),
-            DataPoint(230.0),
-            DataPoint(219.0),
-            DataPoint(222.0),)
-    )
-)
-
+@OptIn(ExperimentalMaterial3Api::class)
 @Composable
 fun TrackersListScreen(navController: NavHostController, viewModel: MyViewModel){
+
+    val trackersList by viewModel.trackersList.collectAsState()
+    val pullRefreshState = rememberPullToRefreshState()
+    val isLoading by viewModel.isLoading.collectAsState()
 
 
     Column(modifier = Modifier.padding(bottom= 60.dp)){
         Tabbar(title = "Устройства")
-
+        Box(modifier = Modifier
+            .nestedScroll(pullRefreshState.nestedScrollConnection)){
             LazyColumn(contentPadding = PaddingValues()){
                 items(trackersList){ tracker->
                     TrackersListElement(navController = navController,tracker,viewModel )
                 }
             }
+            if (pullRefreshState.isRefreshing){
+                LaunchedEffect(true){
+                    viewModel.updateTrackers()
+
+                }
+            }
+            LaunchedEffect(isLoading){
+                if (isLoading){
+                    pullRefreshState.startRefresh()
+                }else{
+                    pullRefreshState.endRefresh()
+                }
+            }
+            PullToRefreshContainer(state = pullRefreshState,
+                modifier = Modifier.align(Alignment.TopCenter),
+                containerColor = Color.Transparent,
+                contentColor = Color.Black
+            )
+
+
+
+        }
+
+
 
     }
 
@@ -178,5 +162,5 @@ fun TrackersListElement(navController: NavHostController, tracker: TrackerData, 
 @Preview
 @Composable
 fun TrackersListScreenPreview(){
-    TrackersListScreen(rememberNavController(), viewModel = MyViewModel())
+//    TrackersListScreen(rememberNavController(), viewModel = MyViewModel())
 }

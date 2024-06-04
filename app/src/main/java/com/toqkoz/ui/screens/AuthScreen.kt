@@ -12,6 +12,7 @@ import androidx.navigation.NavHostController
 import androidx.navigation.compose.NavHost
 import androidx.navigation.compose.composable
 import androidx.navigation.compose.rememberNavController
+import com.toqkoz.MyViewModel
 import com.toqkoz.ui.screens.auth.AboutScreen
 import com.toqkoz.ui.screens.auth.LoginScreen
 import com.toqkoz.ui.screens.auth.NewPasswordScreen
@@ -30,7 +31,7 @@ enum class AuthScreens {
 }
 
 @Composable
-fun AuthScreen(rootNavController: NavHostController) {
+fun AuthScreen(rootNavController: NavHostController, viewModel:MyViewModel) {
     val authNavController = rememberNavController()
     var selectedRoute by remember { mutableStateOf(AuthScreens.LOGIN) }
 
@@ -45,10 +46,10 @@ fun AuthScreen(rootNavController: NavHostController) {
         },
     ) {
         composable(route = AuthScreens.LOGIN.name) {
-            LoginScreen(authNavController)
+            LoginScreen(rootNavController,authNavController, viewModel)
         }
         composable(route = AuthScreens.PASSWORD.name) {
-            PasswordScreen(rootNavController, authNavController)
+            PasswordScreen(rootNavController, authNavController, viewModel)
         }
         composable(route = AuthScreens.RESET_LOGIN.name) {
             ResetLoginScreen(authNavController)
@@ -69,6 +70,6 @@ fun AuthScreen(rootNavController: NavHostController) {
 @Composable
 fun AuthScreenPreview() {
     ToqkozTheme {
-        AuthScreen(rememberNavController())
+//        AuthScreen(rememberNavController(), viewModel = MyViewModel())
     }
 }

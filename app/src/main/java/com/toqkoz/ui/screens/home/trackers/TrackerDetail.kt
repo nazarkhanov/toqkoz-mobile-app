@@ -97,6 +97,8 @@ fun TrackerDetailScreen(navController: NavHostController, viewModel:MyViewModel)
                         fontSize = 20.sp
                     )
                 )
+                PairInfo("Создано", tracker.created_at)
+                PairInfo("Последнее оповещение", tracker.latest_at)
                 PairInfo("Детали", tracker.description)
             }
         }

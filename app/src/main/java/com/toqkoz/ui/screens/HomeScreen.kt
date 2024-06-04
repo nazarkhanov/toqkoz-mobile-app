@@ -157,7 +157,7 @@ enum class HomeScreens {
                     MapScreen()
                 }
                 composable(route = HomeScreens.SETTINGS.name) {
-                    SettingsScreen()
+                    SettingsScreen(rootNavController,viewModel)
                 }
             }
         }
@@ -168,7 +168,7 @@ enum class HomeScreens {
 @Composable
 fun MainScreenPreview() {
     ToqkozTheme {
-        HomeScreen(rememberNavController(), viewModel= MyViewModel())
+//        HomeScreen(rememberNavController(), viewModel= MyViewModel())
     }
 }
 

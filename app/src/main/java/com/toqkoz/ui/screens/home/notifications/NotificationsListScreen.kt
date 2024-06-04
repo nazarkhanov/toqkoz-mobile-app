@@ -1,5 +1,7 @@
 package com.toqkoz.ui.screens.home.notifications
 
+import android.os.Build
+import androidx.annotation.RequiresApi
 import androidx.compose.foundation.BorderStroke
 import androidx.compose.foundation.background
 import androidx.compose.foundation.layout.Arrangement
@@ -16,6 +18,8 @@ import androidx.compose.material3.CardDefaults
 import androidx.compose.material3.ExperimentalMaterial3Api
 import androidx.compose.material3.MaterialTheme
 import androidx.compose.material3.OutlinedCard
+import androidx.compose.material3.ShapeDefaults
+import androidx.compose.material3.Shapes
 import androidx.compose.material3.Text
 import androidx.compose.material3.pulltorefresh.PullToRefreshContainer
 import androidx.compose.material3.pulltorefresh.rememberPullToRefreshState
@@ -27,6 +31,7 @@ import androidx.compose.ui.Alignment
 import androidx.compose.ui.Modifier
 import androidx.compose.ui.draw.clip
 import androidx.compose.ui.graphics.Color
+import androidx.compose.ui.graphics.Shape
 import androidx.compose.ui.input.nestedscroll.nestedScroll
 import androidx.compose.ui.text.TextStyle
 import androidx.compose.ui.tooling.preview.Preview
@@ -39,6 +44,9 @@ import com.toqkoz.data.NotificationData
 import com.toqkoz.ui.components.Tabbar
 import com.toqkoz.ui.screens.home.NotificationsScreens
 import com.toqkoz.ui.theme.ToqkozTheme
+import java.time.LocalDateTime
+import java.time.ZoneOffset
+import java.time.format.DateTimeFormatter
 
 @OptIn(ExperimentalMaterial3Api::class)
 @Composable
@@ -65,7 +73,7 @@ fun NotificationsListScreen(navController: NavHostController, viewModel: MyViewM
 
                 }
             }
-            LaunchedEffect(pullRefreshState.isRefreshing){
+            LaunchedEffect(isLoading){
                 if (isLoading){
                     pullRefreshState.startRefresh()
                 }else{
@@ -75,13 +83,14 @@ fun NotificationsListScreen(navController: NavHostController, viewModel: MyViewM
             PullToRefreshContainer(state = pullRefreshState,
                 modifier = Modifier.align(Alignment.TopCenter),
                 containerColor = Color.Transparent,
-                contentColor = Color.Black
+                contentColor = Color.Black,
             )
 
         }
     }
 }
 
+@RequiresApi(Build.VERSION_CODES.O)
 @Composable
 fun NotificationsListElement(navController: NavHostController, notification: NotificationData, viewModel: MyViewModel){
 
@@ -122,7 +131,7 @@ fun NotificationsListElement(navController: NavHostController, notification: Not
                 }
 
                 Text(
-                    text = "10 минут назад",
+                    text = timeAgo(notification.latest_at),
                     style = TextStyle(fontSize = 12.sp)
                 )
             }
@@ -150,11 +159,27 @@ fun NotificationsListElement(navController: NavHostController, notification: Not
     }
 }
 
+@RequiresApi(Build.VERSION_CODES.O)
+fun timeAgo(dateString: String): String {
+    val formatter = DateTimeFormatter.ofPattern("yyyy-MM-dd'T'HH:mm:ss.SSSSSS")
+    val date = LocalDateTime.parse(dateString, formatter)
+
+    val currentTime = LocalDateTime.now()
+    val diffSeconds = date.toEpochSecond(ZoneOffset.UTC) - currentTime.toEpochSecond(ZoneOffset.UTC)
+
+    return when {
+        diffSeconds < 60 -> "1 мин назад"
+        diffSeconds < 3600 -> "${diffSeconds / 60} мин назад"
+        diffSeconds < 86400 -> "${diffSeconds / 3600} ч назад"
+        else -> date.format(DateTimeFormatter.ofPattern("yyyy-MM-dd HH:mm:ss"))
+    }
+}
+
 
 @Preview(showBackground = true)
 @Composable
 fun NotificationsListScreenPreview() {
     ToqkozTheme {
-        NotificationsListScreen(rememberNavController(), viewModel = MyViewModel())
+//        NotificationsListScreen(rememberNavController(), viewModel = MyViewModel())
     }
 }

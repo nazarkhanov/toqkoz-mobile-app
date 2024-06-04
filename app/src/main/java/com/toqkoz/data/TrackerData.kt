@@ -8,6 +8,16 @@ data class TrackerData(
     val id: String = "",
     val title: String = "",
     val description: String ="",
+    val created_at: String ="",
+    val latest_at: String ="",
     val status: String ="",
-    val chartData: PersistentList<DataPoint> = persistentListOf()
+    val count: Int = 0,
+    val chartData: PersistentList<DataPoint> = persistentListOf(DataPoint(220.0),
+        DataPoint(224.0),
+        DataPoint(219.0),
+        DataPoint(222.0),
+        DataPoint(220.0),
+        DataPoint(210.0),
+        DataPoint(219.0),
+        DataPoint(225.0))
 )
