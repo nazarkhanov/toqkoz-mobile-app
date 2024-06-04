@@ -1,13 +1,32 @@
 {
   "project_info": {
-    "project_number": "1064635080247",
-    "project_id": "toqkoz",
-    "storage_bucket": "toqkoz.appspot.com"
+    "project_number": "1044278518521",
+    "project_id": "fir-pushnotifications-fd2b4",
+    "storage_bucket": "fir-pushnotifications-fd2b4.appspot.com"
   },
   "client": [
     {
       "client_info": {
-        "mobilesdk_app_id": "1:1064635080247:android:2c0e4d109f6791c06669b2",
+        "mobilesdk_app_id": "1:1044278518521:android:9b43a60590ced46ce3f828",
+        "android_client_info": {
+          "package_name": "com.example.firebasepushnotifications"
+        }
+      },
+      "oauth_client": [],
+      "api_key": [
+        {
+          "current_key": "AIzaSyDD5AWWcKAEcm4FdmW8wUEbMHgnpTuPI9g"
+        }
+      ],
+      "services": {
+        "appinvite_service": {
+          "other_platform_oauth_client": []
+        }
+      }
+    },
+    {
+      "client_info": {
+        "mobilesdk_app_id": "1:1044278518521:android:8e4f8918b58acb05e3f828",
         "android_client_info": {
           "package_name": "com.toqkoz"
         }
@@ -15,7 +34,7 @@
       "oauth_client": [],
       "api_key": [
         {
-          "current_key": "AIzaSyBn02rSwGinn0GSlfTXnhXn76UEKWyIH6g"
+          "current_key": "AIzaSyDD5AWWcKAEcm4FdmW8wUEbMHgnpTuPI9g"
         }
       ],
       "services": {
