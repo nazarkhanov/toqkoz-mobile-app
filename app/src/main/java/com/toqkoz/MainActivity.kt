@@ -23,6 +23,14 @@ import com.toqkoz.ui.screens.AuthScreen
 import com.toqkoz.ui.screens.HomeScreen
 
 import com.toqkoz.ui.theme.ToqkozTheme
+import kotlinx.coroutines.CoroutineScope
+import kotlinx.coroutines.Dispatchers
+import kotlinx.coroutines.launch
+import retrofit2.Call
+import retrofit2.Callback
+import retrofit2.Response
+import retrofit2.Retrofit
+import retrofit2.converter.gson.GsonConverterFactory
 
 enum class MainScreens {
     AUTH,
@@ -36,6 +44,8 @@ class MainActivity : ComponentActivity() {
         super.onCreate(savedInstanceState)
         requestNotificationPermission()
         requestFirebaseToken()
+        val viewModel= MyViewModel()
+        viewModel.uploadNotificationsList() // loading the data to viewmodel
 
         setContent {
             ToqkozTheme {
@@ -55,7 +65,7 @@ class MainActivity : ComponentActivity() {
                         AuthScreen(navController)
                     }
                     composable(route = MainScreens.HOME.name) {
-                        HomeScreen(navController)
+                        HomeScreen(navController, viewModel)
                     }
                 }
             }
@@ -86,4 +96,6 @@ class MainActivity : ComponentActivity() {
             Log.d("test", "token: $token")
         }
     }
+
+
 }

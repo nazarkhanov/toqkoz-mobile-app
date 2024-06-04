@@ -7,6 +7,7 @@ import androidx.compose.ui.tooling.preview.Preview
 import androidx.navigation.compose.NavHost
 import androidx.navigation.compose.composable
 import androidx.navigation.compose.rememberNavController
+import com.toqkoz.MyViewModel
 import com.toqkoz.ui.screens.home.notifications.NotificationDetailScreen
 import com.toqkoz.ui.screens.home.notifications.NotificationsListScreen
 import com.toqkoz.ui.theme.ToqkozTheme
@@ -17,7 +18,7 @@ enum class NotificationsScreens {
 }
 
 @Composable
-fun NotificationsScreen() {
+fun NotificationsScreen(viewModel: MyViewModel) {
     val navController = rememberNavController()
 
     NavHost(
@@ -31,10 +32,10 @@ fun NotificationsScreen() {
         },
     ) {
         composable(route = NotificationsScreens.LIST.name) {
-            NotificationsListScreen(navController)
+            NotificationsListScreen(navController, viewModel)
         }
         composable(route = NotificationsScreens.DETAIL.name) {
-            NotificationDetailScreen(navController)
+            NotificationDetailScreen(navController, viewModel )
         }
     }
 }
@@ -43,6 +44,6 @@ fun NotificationsScreen() {
 @Composable
 fun NotificationsScreenPreview() {
     ToqkozTheme {
-        NotificationsScreen()
+        NotificationsScreen(viewModel = MyViewModel())
     }
 }

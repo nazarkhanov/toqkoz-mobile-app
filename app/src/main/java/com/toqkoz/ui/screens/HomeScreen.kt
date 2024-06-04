@@ -43,6 +43,7 @@ import androidx.navigation.NavHostController
 import androidx.navigation.compose.NavHost
 import androidx.navigation.compose.composable
 import androidx.navigation.compose.rememberNavController
+import com.toqkoz.MyViewModel
 import com.toqkoz.ui.screens.home.MapScreen
 import com.toqkoz.ui.screens.home.NotificationsScreen
 import com.toqkoz.ui.screens.home.SettingsScreen
@@ -58,7 +59,7 @@ enum class HomeScreens {
 
 @SuppressLint("UnusedMaterial3ScaffoldPaddingParameter")
 @Composable
- fun HomeScreen(rootNavController: NavHostController) {
+ fun HomeScreen(rootNavController: NavHostController, viewModel: MyViewModel) {
     val homeNavController = rememberNavController()
     var selectedRoute by remember {mutableStateOf(HomeScreens.NOTIFICATIONS) }
 
@@ -147,10 +148,10 @@ enum class HomeScreens {
                 },
             ) {
                 composable(route = HomeScreens.NOTIFICATIONS.name) {
-                    NotificationsScreen()
+                    NotificationsScreen(viewModel)
                 }
                 composable(route = HomeScreens.TRACKERS.name) {
-                    TrackersScreen()
+                    TrackersScreen(viewModel)
                 }
                 composable(route = HomeScreens.MAP.name) {
                     MapScreen()
@@ -167,7 +168,7 @@ enum class HomeScreens {
 @Composable
 fun MainScreenPreview() {
     ToqkozTheme {
-        HomeScreen(rememberNavController())
+        HomeScreen(rememberNavController(), viewModel= MyViewModel())
     }
 }
 

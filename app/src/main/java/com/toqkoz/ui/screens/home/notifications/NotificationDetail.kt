@@ -20,18 +20,20 @@ import androidx.compose.runtime.Composable
 import androidx.compose.ui.Modifier
 import androidx.compose.ui.draw.clip
 import androidx.compose.ui.text.TextStyle
-import androidx.compose.ui.text.font.FontWeight
 import androidx.compose.ui.tooling.preview.Preview
 import androidx.compose.ui.unit.dp
 import androidx.compose.ui.unit.sp
 import androidx.navigation.NavHostController
 import androidx.navigation.compose.rememberNavController
+import com.toqkoz.MyViewModel
+import com.toqkoz.data.NotificationData
 import com.toqkoz.ui.theme.ToqkozTheme
 
 @SuppressLint("UnusedMaterial3ScaffoldPaddingParameter")
 @OptIn(ExperimentalMaterial3Api::class)
 @Composable
-fun NotificationDetailScreen(navController: NavHostController) {
+fun NotificationDetailScreen(navController: NavHostController, viewModel: MyViewModel) {
+    val notification: NotificationData = viewModel.selectedNotification.value
     Scaffold(
         topBar = {
             TopAppBar(
@@ -61,7 +63,7 @@ fun NotificationDetailScreen(navController: NavHostController) {
                     .padding(vertical = 6.dp, horizontal = 8.dp),
             ) {
                 Text(
-                    text = "Неисправность",
+                    text = notification.status,
                     style = TextStyle(
                         fontSize = 12.sp,
                         color = MaterialTheme.colorScheme.onError
@@ -70,7 +72,7 @@ fun NotificationDetailScreen(navController: NavHostController) {
             }
 
             Text(
-                text = "#559723 РПЗ: Обесточен",
+                text = notification.title,
                 modifier = Modifier
                     .fillMaxWidth()
                     .padding(vertical = 12.dp),
@@ -80,9 +82,9 @@ fun NotificationDetailScreen(navController: NavHostController) {
                 )
             )
 
-            PairInfo("Создано", "05-30-2024, 05:11:23 GTM+5")
-            PairInfo("Последнее оповещение", "05-30-2024, 05:11:23 GTM+5")
-            PairInfo("Детали", "Подстанция: РП3\nЭлектроснабжение: Обесточен\nАдрес: г.Алматы, ул.Момышулы 24\n")
+            PairInfo("Создано", notification.created_at)
+            PairInfo("Последнее оповещение", notification.latest_at)
+            PairInfo("Детали", notification.description)
         }
     }
 }
@@ -91,7 +93,7 @@ fun NotificationDetailScreen(navController: NavHostController) {
 @Composable
 fun NotificationDetailScreenPreview() {
     ToqkozTheme {
-        NotificationDetailScreen(rememberNavController())
+        NotificationDetailScreen(rememberNavController(), viewModel = MyViewModel())
     }
 }
 

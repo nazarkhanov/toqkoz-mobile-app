@@ -1,5 +1,7 @@
 package com.toqkoz.ui.screens.home
 
+import androidx.compose.animation.EnterTransition
+import androidx.compose.animation.ExitTransition
 import androidx.compose.foundation.layout.Arrangement
 import androidx.compose.foundation.layout.Column
 import androidx.compose.foundation.layout.fillMaxHeight
@@ -13,54 +15,55 @@ import androidx.compose.ui.Alignment
 import androidx.compose.ui.Modifier
 import androidx.compose.ui.tooling.preview.Preview
 import androidx.compose.ui.unit.dp
+import androidx.lifecycle.ViewModel
+import androidx.navigation.compose.NavHost
+import androidx.navigation.compose.composable
+import androidx.navigation.compose.rememberNavController
+import com.toqkoz.MyViewModel
 import com.toqkoz.ui.components.DataPoint
 import com.toqkoz.ui.components.LineChart
 import com.toqkoz.ui.components.Tabbar
+import com.toqkoz.ui.screens.home.notifications.NotificationDetailScreen
+import com.toqkoz.ui.screens.home.notifications.NotificationsListScreen
+import com.toqkoz.ui.screens.home.trackers.TrackerDetailScreen
+import com.toqkoz.ui.screens.home.trackers.TrackersListScreen
 import com.toqkoz.ui.theme.ToqkozTheme
 import kotlinx.collections.immutable.persistentListOf
-
+enum class TrackersScreens {
+    LIST,
+    DETAIL,
+}
 @Composable
-fun TrackersScreen() {
-    val chartData = persistentListOf(
-        DataPoint(220.0),
-        DataPoint(224.0),
-        DataPoint(219.0),
-        DataPoint(222.0),
-        DataPoint(220.0),
-        DataPoint(224.0),
-        DataPoint(219.0),
-        DataPoint(222.0),
-    )
+fun TrackersScreen(viewModel:MyViewModel) {
 
-    Column(modifier = Modifier.fillMaxSize()) {
-        Tabbar(title = "Устройства")
+    val navController = rememberNavController()
 
-        Column (
-            modifier = Modifier
-                .fillMaxWidth()
-                .requiredHeight(240.dp)
-                .padding(vertical = 20.dp),
-            verticalArrangement = Arrangement.Center,
-            horizontalAlignment = Alignment.End
-
-        ) {
-            LineChart(
-                modifier = Modifier
-                    .fillMaxWidth()
-                    .fillMaxHeight(),
-                data = chartData,
-                graphColor = MaterialTheme.colorScheme.primary,
-                showDashedLine = true,
-                showYLabels = true
-            )
+    NavHost(
+        navController = navController,
+        startDestination = NotificationsScreens.LIST.name,
+        enterTransition = {
+            EnterTransition.None
+        },
+        exitTransition = {
+            ExitTransition.None
+        },
+    ) {
+        composable(route = TrackersScreens.LIST.name) {
+            TrackersListScreen(navController, viewModel)
+        }
+        composable(route = TrackersScreens.DETAIL.name) {
+            TrackerDetailScreen(navController, viewModel )
         }
     }
+
 }
+
+
 
 @Preview(showBackground = true)
 @Composable
 fun TrackersScreenPreview() {
     ToqkozTheme {
-        TrackersScreen()
+        TrackersScreen(viewModel = MyViewModel())
     }
 }
